@@ -106,7 +106,7 @@ National Center for the Improvement of Educational Assessment<br>
 :::
 
 
-## Purpose {.smaller}
+## Purpose
 
 This memorandum lays out **technical and reporting considerations** for Illinois SGP analyses in ELA and mathematics for grades 4 through 11 during the transition from the **SAT/PSAT** high-school system to the **ACT/PreACT** high-school system.
 
@@ -129,7 +129,7 @@ This memorandum lays out **technical and reporting considerations** for Illinois
 The discussion distinguishes throughout between **cohort-referenced** and **baseline-referenced** SGPs because the two approaches are affected very differently by the vendor transition.
 
 ::: {.key-insight}
-**Cohort-referenced SGPs survive the transition with caveats. Baseline-referenced high-school SGPs require new ACT-era coefficient matrices before they can be reported operationally.**
+**Cohort-referenced SGPs survive the transition with caveats. Baseline-referenced high-school SGPs probably require new ACT-era coefficient matrices before they can be reported operationally (equating NEW scale to OLD can possibly be used as a workaround).**
 :::
 
 :::
@@ -149,7 +149,7 @@ The discussion distinguishes throughout between **cohort-referenced** and **base
 :::
 
 
-## The Current Illinois Growth Workflow {.smaller}
+## The Current Illinois Growth Workflow
 
 ::: {.columns}
 ::: {.column width="55%"}
@@ -260,37 +260,6 @@ The 2025 production script already shows the right pattern in its science knots/
 :::
 
 
-## Two Policy Changes — Keep Them Separate {.smaller}
-
-Illinois has, **simultaneously**, made two distinct changes that need to be reasoned about independently:
-
-::: {.columns}
-::: {.column width="50%"}
-
-**1. Vendor / assessment-system change**
-
-- SAT/PSAT family → ACT/PreACT family (grades 9–11)
-- Affects **score scales**, **prior-score availability**, **CSEM definitions**, and the **identity of the conditional reference distribution**
-- This is what most of this memo is about
-
-:::
-::: {.column width="50%"}
-
-**2. Performance-level / proficiency-benchmark reset**
-
-- New unified Illinois performance levels
-- New grade-specific ACT ELA, mathematics, science cut scores
-- Affects **growth-to-standard targets**, **adequacy summaries**, and **public reporting language**
-- Does **not** by itself break SGP percentile calculations
-
-:::
-:::
-
-::: {.key-insight}
-**SGP percentiles are computed from scale scores and conditional distributions, not from performance-level labels. The benchmark reset matters for projection targets and adequacy reporting — not for the percentile machinery itself.**
-:::
-
-
 ## {.center}
 
 ::: {style="text-align: center; padding-top: 3em;"}
@@ -360,7 +329,7 @@ $$\mathrm{SGP}_{g,t} = \widehat{F}_{Y_{g,t}\mid \mathbf{H}_{g,t}}(Y_{g,t}\mid \m
 
 **The catch**
 
-The transition is *part of the estimand*. A 2025 grade-11 cohort SGP is not directly comparable to a future 2028 grade-11 cohort SGP whose reference cohort has fully ACT-family priors. Public-facing language needs to label transition-year cohort SGPs as such.
+The transition is *part of the estimand*. A 2025 grade-11 cohort SGP is not directly comparable to a future 2028 grade-11 cohort SGP whose reference cohort has fully ACT-family priors. Public-facing language should consider labeling transition-year cohort SGPs as such.
 
 :::
 :::
@@ -641,141 +610,6 @@ This is the same posture the 2025 production script already supports — it requ
 :::
 
 
-## {.center}
-
-::: {style="text-align: center; padding-top: 3em;"}
-
-[Performance-Level Reset]{style="font-family: 'Josefin Sans'; font-size: 1.0em; font-weight: 300; color: #7c7c7c; display: block; margin-bottom: 0.6em; letter-spacing: 0.18em; text-transform: uppercase;"}
-
-[Two Tracks, Cleanly Separated]{style="font-family: 'Josefin Sans'; font-size: 2.4em; font-weight: 700; color: #3498DB; display: block; margin-bottom: 0.5em;"}
-
-[The proficiency-benchmark reset is a separate concern from the vendor transition.]{style="font-family: 'Josefin Sans'; font-size: 1.1em; font-weight: 300; color: #7c7c7c; font-style: italic; display: block;"}
-
-:::
-
-
-## What Changes — and What Doesn't {.smaller}
-
-::: {.columns}
-::: {.column width="50%"}
-
-**Unaffected by the cut-score reset**
-
-- SGP **percentile estimation** uses scale scores and conditional distributions
-- SGPs do **not** use performance-level labels (Below Proficient, Approaching, Proficient, Above Proficient)
-- Therefore: new cut scores by themselves do *not* break either cohort- or baseline-referenced SGP percentile calculations
-
-::: {.key-insight}
-**Percentile SGPs can be compared conceptually before and after the reset, subject only to the usual cohort vs baseline distinction.**
-:::
-
-:::
-::: {.column width="50%"}
-
-**Affected by the cut-score reset**
-
-- `sgp.projections`, `sgp.projections.lagged`
-- `sgp.projections.baseline`, `sgp.projections.lagged.baseline`
-- All **growth-to-standard** summaries
-- All **adequacy** language and reporting
-
-**Operational implications**
-
-- Target definitions for 2026+ should be aligned to the **new Illinois proficiency benchmarks**, including new IAR ELA / mathematics benchmarks and ACT-family HS benchmarks
-- Projection and adequacy summaries must **not mix** old and new proficiency targets
-- Reports that include both achievement-level changes and growth results should explicitly state that SGPs are based on scale scores
-
-:::
-:::
-
-
-## {.center}
-
-::: {style="text-align: center; padding-top: 3em;"}
-
-[Implementation]{style="font-family: 'Josefin Sans'; font-size: 1.0em; font-weight: 300; color: #7c7c7c; display: block; margin-bottom: 0.6em; letter-spacing: 0.18em; text-transform: uppercase;"}
-
-[Configuration for 2026 and 2027]{style="font-family: 'Josefin Sans'; font-size: 2.4em; font-weight: 700; color: #3498DB; display: block; margin-bottom: 0.5em;"}
-
-[What needs to change in the production R script.]{style="font-family: 'Josefin Sans'; font-size: 1.1em; font-weight: 300; color: #7c7c7c; font-style: italic; display: block;"}
-
-:::
-
-
-## Configuration: Extending Grade Sequences {.smaller}
-
-::: {.columns}
-::: {.column width="55%"}
-
-For a 2026 cohort-referenced run using three panel years, the conceptual configuration:
-
-```r
-sgp.panel.years = c(
-    "2023_2024.2",
-    "2024_2025.2",
-    "2025_2026.2"
-)
-
-sgp.grade.sequences = list(
-    c("3", "4"),
-    c("3", "4", "5"),
-    c("4", "5", "6"),
-    c("5", "6", "7"),
-    c("6", "7", "8"),
-    c("7", "8", "9"),
-    c("8", "9", "10"),
-    c("9", "10", "11")
-)
-```
-
-Same structure applied separately to ELA and mathematics, **assuming content-area naming is consistent** across IAR, PSAT/SAT, PreACT, and ACT data files.
-
-:::
-::: {.column width="45%"}
-
-**Production cleanliness**
-
-- **Do not** enable baseline flags for HS configurations unless matching HS baseline matrices exist
-- A clean implementation: separate the IAR grades 4–8 baseline run from the HS cohort-only run, then combine outputs downstream
-
-::: {.key-insight}
-**Two runs, one report.** Keep the IAR baseline workflow exactly as is; add a parallel cohort-only run for grades 9–11; merge results in the reporting layer.
-:::
-
-Content-area harmonization across vendors is the single highest-risk data step before the first HS production run.
-
-:::
-:::
-
-
-## Knots, Boundaries, and Scale Validation {.smaller}
-
-::: {.columns}
-::: {.column width="55%"}
-
-The ACT-family assessments have **grade-specific scales**. `SGPstateData[["IL"]]` must include appropriate knots and boundaries for each HS content/grade/current-score scale.
-
-**Specific checks before production**
-
-- Current-year score ranges by grade and content area
-- Missing, invalid, or non-operational scores
-- Score precision — are ACT/PreACT scale scores integer-valued in the delivered file?
-- Availability and interpretation of conditional standard errors of measurement
-- Consistency of content labels across IAR, PSAT/SAT, PreACT, and ACT records
-
-:::
-::: {.column width="45%"}
-
-The 2025 production script already shows the right pattern in its science knots/boundaries block. Extend the same pattern to ELA and mathematics on the ACT-family scales.
-
-::: {.key-insight}
-**Validation is grade-, content-, and assessment-specific.** Skipping this step in the first HS production cycle is the most likely source of silent errors in cohort-referenced HS SGPs.
-:::
-
-:::
-:::
-
-
 ## SIMEX, Linking, and Participation {.smaller}
 
 ::: {.columns}
@@ -853,36 +687,6 @@ These results describe student growth relative to academic peers in the **same s
 :::
 
 
-## Decision Points for ISBE {.smaller}
-
-Before implementing high-school baseline-referenced SGPs, ISBE should resolve six design decisions:
-
-::: {.columns}
-::: {.column width="50%"}
-
-1. **Reference cohort.** Single ACT-era baseline year, pooled set of years, or another fixed reference design?
-
-2. **Grade-specific timing.** Introduce grade-9, grade-10, grade-11 baselines as soon as each sequence becomes stable, or wait and introduce all HS baselines together?
-
-3. **Prior-score rule.** Up to two priors (consistent with grades 4–8), or a one-prior grade-11 model during the 2026 transition?
-
-:::
-::: {.column width="50%"}
-
-4. **SIMEX availability.** Are HS CSEM fields available and suitable for the same SIMEX workflow used in the current IAR analyses?
-
-5. **Projection targets.** Which growth-projection and lagged-projection outputs are needed for HS, and how should they align to the new ACT proficiency benchmarks?
-
-6. **Accountability use.** Will HS cohort SGPs be **informational only** during transition years, or will they enter accountability calculations before baseline matrices are available?
-
-:::
-:::
-
-::: {.key-insight}
-**Each decision can be made independently — but together they define the shape of the 2026 and 2027 production runs and the 2027–2028 baseline calibration window.**
-:::
-
-
 ## Bottom Line — Timing Roadmap {.smaller}
 
 ::: {.columns}
@@ -906,35 +710,12 @@ Before implementing high-school baseline-referenced SGPs, ISBE should resolve si
 
 **The strongest technical course**
 
-- Continue grades 4–8 cohort + baseline analyses
+- Continue grades 4–8 cohort + baseline analyses (with updated baseline matrices)
 - Add cohort-referenced HS analyses with explicit transition labels
 - Delay HS baseline-referenced reporting until ACT-era matrices are calibrated, validated, and approved
 - Under a two-prior model, **2028** is the earliest prudent year for operational HS baseline use
 
 :::
-:::
-
-
-## Source Documents Reviewed {.smaller}
-
-::: {style="font-size: 0.95em;"}
-
-This memo is based on the following source materials:
-
-- **ACT FAQ** (June 7, 2024) — describing Illinois' transition to ACT beginning in spring 2025 and identifying ACT with Writing, PreACT Secure, and PreACT 9 Secure as the grade 11, grade 10, and grade 9 assessments.
-
-- **Spring 2026 ACT with Writing, PreACT Secure, and PreACT 9 Secure Pre-ID and Non-College Reportable Details** (updated Nov 13, 2025) — describing the 2026 Pre-ID structure and operational treatment of ACT/PreACT records.
-
-- **Spring 2024 SAT with Essay, PSAT 10, and PSAT 8/9 Pre-ID** (updated Jan 23, 2024) — describing the prior College Board high-school assessment records.
-
-- **Right-Sizing Illinois' Proficiency Benchmarks** — describing the new unified performance levels, ACT-family cut scores, and the distinction between performance levels and SGPs.
-
-- `PARCC_IL_SGP_2024_2025.2.R` — the supplied 2025 Illinois SGP analysis script.
-
-:::
-
-::: {style="text-align: center; margin-top: 1em;"}
-[Full memo PDF](assets/documents/SGP_Analysis_Memo_Illinois_05132026.pdf){target="_blank"} · [LaTeX source](assets/documents/SGP_Analysis_Memo_Illinois_05132026.tex){target="_blank"}
 :::
 
 
