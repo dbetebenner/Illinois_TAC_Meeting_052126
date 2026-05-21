@@ -736,16 +736,3 @@ National Center for the Improvement of Educational Assessment<br>
 [Illinois TAC · May 21, 2026]{.conference-badge style="display: block; margin-top: 1em;"}
 
 :::
-
-
-## {.center}
-
-::: {style="text-align: center; padding-top: 2em;"}
-
-[Appendix]{style="font-family: 'Josefin Sans'; font-size: 1.1em; font-weight: 300; color: #7c7c7c; display: block; margin-bottom: 0.4em; letter-spacing: 0.15em; text-transform: uppercase;"}
-
-[Supplemental Material]{style="font-family: 'Josefin Sans'; font-size: 1.6em; font-weight: 700; display: block; margin-bottom: 0.3em;"}
-
-[Reserved for additional figures, tables, and follow-up technical material.]{style="font-family: 'Josefin Sans'; font-size: 1.0em; font-weight: 300; color: #7c7c7c; display: block; margin-bottom: 2em; font-style: italic;"}
-
-:::
