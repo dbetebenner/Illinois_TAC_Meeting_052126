@@ -1,0 +1,291 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.95in]{geometry}
+\IfFileExists{/Users/conet/.TeX/Preambles/damianpdfpreamble}{%
+  \input{/Users/conet/.TeX/Preambles/damianpdfpreamble}%
+}{%
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+  \usepackage{microtype}
+  \usepackage{amsmath,amssymb}
+  \usepackage{graphicx}
+  \usepackage{booktabs,longtable,array,tabularx}
+  \usepackage{enumitem}
+  \usepackage{xcolor}
+  \usepackage{fancyhdr}
+  \usepackage{hyperref}
+  \definecolor{linkblue}{RGB}{0,70,140}
+  \hypersetup{colorlinks=true, linkcolor=linkblue, urlcolor=linkblue, citecolor=linkblue}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0.55em}
+  \fancypagestyle{damian}{%
+    \fancyhf{}
+    \lhead{\small\textsf{Illinois SGP Transition Considerations}}
+    \rhead{\small\textsf{\thepage}}
+    \renewcommand{\headrulewidth}{0.4pt}}
+}
+
+\makeatletter
+\@ifpackageloaded{booktabs}{}{\usepackage{booktabs}}
+\@ifpackageloaded{longtable}{}{\usepackage{longtable}}
+\@ifpackageloaded{array}{}{\usepackage{array}}
+\@ifpackageloaded{tabularx}{}{\usepackage{tabularx}}
+\@ifpackageloaded{enumitem}{}{\usepackage{enumitem}}
+\@ifpackageloaded{hyperref}{}{\usepackage{hyperref}}
+\makeatother
+
+\hypersetup{%
+pdftitle={Considerations for Illinois SGP Analyses During the Transition to ACT},
+pdfauthor={Damian W. Betebenner},
+pdfcreator={pdfLaTeX},
+pdfproducer={pdfLaTeX},
+pdfsubject={Illinois Student Growth Percentile analyses},
+pdfkeywords={Illinois, SGP, ACT, PreACT, IAR, baseline, cohort}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlist[itemize]{leftmargin=1.4em, itemsep=0.15em, topsep=0.2em}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=0.15em, topsep=0.2em}
+\urlstyle{same}
+
+\begin{document}
+\thispagestyle{plain}
+\pagestyle{damian}
+
+\title{\textsf{\LARGE Considerations for Illinois Student Growth Percentile Analyses During the Transition to ACT}}
+\author{\Large Damian W. Betebenner\\The National Center for the Improvement of Educational Assessment\\Dover, New Hampshire}
+\date{May 13, 2026}
+
+\maketitle
+
+\section{Purpose}
+
+This memorandum lays out technical and reporting considerations for Illinois Student Growth Percentile (SGP) analyses in English language arts (ELA) and mathematics for grades 4 through 11 during the transition from the SAT/PSAT high school assessment system to the ACT/PreACT high school assessment system. The discussion distinguishes between cohort-referenced SGPs and baseline-referenced SGPs because the two approaches are affected differently by the assessment transition.
+
+The immediate operational issue is straightforward. Illinois can continue the existing grades 4 through 8 Illinois Assessment of Readiness (IAR) growth analyses using the current cohort- and baseline-referenced workflow. High school growth, however, enters a transition period beginning with spring 2025, when grade 11 students first took the ACT with Writing, grade 10 students first took PreACT Secure, and grade 9 students first took PreACT 9 Secure. Prior to spring 2025, the statewide high school accountability assessments were SAT with Essay in grade 11, PSAT 10 in grade 10, and PSAT 8/9 in grade 9.
+
+\section{Summary of Conclusions}
+
+\begin{enumerate}
+\item \textbf{Grades 4 through 8 can continue under the established IAR model.} The current Illinois growth workflow calculates ELA and mathematics SGPs for grades 4 through 8 using current IAR scale scores and up to two prior IAR scores. The supplied 2025 R script requests cohort- and baseline-referenced SGPs and projections for those grade sequences, with baseline coefficient matrices added to \texttt{SGPstateData[["IL"]]} before running \texttt{abcSGP}.
+
+\item \textbf{Cohort-referenced high school SGPs are technically feasible throughout the transition, but their interpretation changes by year and grade.} Cohort-referenced SGPs are conditional, within-year norms. They can be estimated with current ACT/PreACT scores and prior PSAT/SAT/IAR scores because an SGP does not require a vertical scale. During transition years, however, the SGP describes a student's relative standing within the current statewide cohort under that year's specific assessment-history pattern.
+
+\item \textbf{Baseline-referenced high school SGPs require new ACT-era coefficient matrices.} Existing pre-pandemic IAR baseline coefficient matrices are not applicable to ACT/PreACT current scores. Similarly, SAT/PSAT-era matrices, if available, would not define the recurring ACT/PreACT assessment histories. Baseline high school SGPs should therefore not be reported operationally until matrices have been created for the relevant ACT-era grade/content sequences and validated for intended use.
+
+\item \textbf{The first year in which all high school current and prior high school assessments are in the ACT family is 2027.} In 2027, grade 11 students will have ACT with Writing as the current assessment, PreACT Secure as the grade 10 first prior, and PreACT 9 Secure as the grade 9 second prior. This makes 2027 the natural first calibration year for a full three-year ACT-family grade 11 baseline, with possible operational baseline use no earlier than 2028 after technical review.
+
+\item \textbf{The 2025 performance-level reset does not invalidate SGP percentile calculations, but it does affect growth projections and adequacy interpretations.} SGP percentiles use scale scores and conditional distributions, not performance levels. Growth projections, growth-to-standard summaries, and any adequacy language must be aligned to the new proficiency benchmarks.
+\end{enumerate}
+
+\section{Background}
+
+Illinois' current grades 4 through 8 growth model uses IAR ELA and mathematics scale scores. The supplied 2025 production script loads 2022-2023, 2023-2024, and 2024-2025 longitudinal data; configures ELA and mathematics analyses for grade sequences \texttt{3-4}, \texttt{3-4-5}, \texttt{4-5-6}, \texttt{5-6-7}, and \texttt{6-7-8}; and runs \texttt{abcSGP} with cohort-referenced percentiles, baseline-referenced percentiles, cohort- and baseline-referenced projections, lagged projections, and SIMEX measurement-error correction.
+
+The high school assessment system changed in spring 2025. ISBE documentation indicates that Illinois moved to ACT as the federally required high school accountability assessment beginning with the 2024-2025 school year. Under the new system, grade 11 students take ACT with Writing, grade 10 students take PreACT Secure, and grade 9 students take PreACT 9 Secure. In 2024, the statewide high school assessment records were SAT with Essay for grade 11, PSAT 10 for grade 10, and PSAT 8/9 for grade 9. The 2026 Pre-ID documentation continues the ACT/PreACT structure for grades 9, 10, and 11.
+
+A separate but related policy change is Illinois' adoption of new unified performance levels and proficiency benchmarks. For high school ACT-family assessments, the state has established grade-specific ACT ELA, mathematics, and science cut scores. The ACT-family score scales differ by grade: grade 9 PreACT 9 Secure uses a 1--32 scale, grade 10 PreACT Secure uses a 1--35 scale, and grade 11 ACT with Writing uses a 1--36 scale. These scale differences do not prevent SGP calculation; they do require assessment-, grade-, and content-specific knots, boundaries, and score-variable validation in the SGP workflow.
+
+\section{Cohort-Referenced Versus Baseline-Referenced SGPs}
+
+Let \(Y_{g,t}\) denote the current-year scale score for a student in grade \(g\) and year \(t\), and let \(\mathbf{H}_{g,t}\) denote that student's available prior achievement history. An SGP is a percentile rank of the student's current score within an estimated conditional distribution of current achievement given prior achievement:
+\[
+  \mathrm{SGP}_{g,t} = \widehat{F}_{Y_{g,t}\mid \mathbf{H}_{g,t}}(Y_{g,t}\mid \mathbf{H}_{g,t}).
+\]
+The critical distinction is the reference distribution used for \(\widehat{F}\).
+
+\subsection{Cohort-Referenced SGPs}
+
+A cohort-referenced SGP estimates \(\widehat{F}\) from the current operational cohort. It answers the question: \emph{Among students in this year's statewide cohort with similar prior achievement histories, where does this student's current achievement fall?}
+
+For transition years, cohort-referenced SGPs are the most defensible operational growth metric because the current cohort itself supplies the conditional reference distribution. The method can condition on prior IAR, PSAT, or SAT scores and estimate the distribution of current ACT/PreACT scores without placing all scores on a common vertical scale. The transition is nevertheless part of the estimand. For example, a 2025 grade 11 cohort SGP compares a student's ACT score to ACT scores of other 2025 grade 11 students with similar PSAT 10 and PSAT 8/9 histories. It is not a comparison to a fixed ACT-era baseline.
+
+\subsection{Baseline-Referenced SGPs}
+
+A baseline-referenced SGP uses a fixed conditional distribution estimated from a specified historical reference group. In SGP software terms, this is implemented through saved coefficient matrices for the relevant state, content area, grade sequence, score scale, knots and boundaries, and measurement-error correction design. It answers the question: \emph{Where does this student's current achievement fall relative to the fixed baseline distribution for students with similar prior achievement histories?}
+
+This fixed-reference interpretation is valuable only when the baseline matrices correspond to the same operational assessment design being used for current students. The existing Illinois baseline matrices support the IAR grades 4 through 8 ELA and mathematics analyses. They do not support high school ACT/PreACT analyses unless new matrices are produced for the ACT-era high school sequences. Applying IAR baseline matrices to ACT/PreACT current scores would be a category error. Applying transition-year matrices to later stable ACT-era sequences would also be problematic if the current/prior assessment pattern differs.
+
+\section{Cohort-Referenced Transition Map}
+
+Table~\ref{tab:cohort_map} summarizes the assessment histories relevant for cohort-referenced SGPs during 2025, 2026, and 2027. The table assumes use of up to two prior years of data when available, consistent with the grades 4 through 8 configuration in the supplied 2025 R script.
+
+\begin{longtable}{L{0.10\textwidth}L{0.22\textwidth}L{0.22\textwidth}L{0.22\textwidth}L{0.15\textwidth}}
+\caption{High school cohort-referenced SGP transition map, assuming up to two prior scores.}\label{tab:cohort_map}\\
+\toprule
+Analysis year & Grade 9 current and priors & Grade 10 current and priors & Grade 11 current and priors & Interpretation \\
+\midrule
+\endfirsthead
+\toprule
+Analysis year & Grade 9 current and priors & Grade 10 current and priors & Grade 11 current and priors & Interpretation \\
+\midrule
+\endhead
+2025 & Current: PreACT 9 Secure. Priors: 2024 IAR grade 8 and 2023 IAR grade 7. & Current: PreACT Secure. Priors: 2024 PSAT 8/9 grade 9 and 2023 IAR grade 8. & Current: ACT with Writing. Priors: 2024 PSAT 10 grade 10 and 2023 PSAT 8/9 grade 9. & First ACT-family current score year. Grade 10 and grade 11 are transition sequences with College Board priors. \\
+\addlinespace
+2026 & Current: PreACT 9 Secure. Priors: 2025 IAR grade 8 and 2024 IAR grade 7. & Current: PreACT Secure. Priors: 2025 PreACT 9 Secure grade 9 and 2024 IAR grade 8. & Current: ACT with Writing. Priors: 2025 PreACT Secure grade 10 and 2024 PSAT 8/9 grade 9. & Grade 10 and grade 11 have ACT-family current and first-prior scores. If two priors are used, grade 11 still includes a College Board second prior. \\
+\addlinespace
+2027 & Current: PreACT 9 Secure. Priors: 2026 IAR grade 8 and 2025 IAR grade 7. & Current: PreACT Secure. Priors: 2026 PreACT 9 Secure grade 9 and 2025 IAR grade 8. & Current: ACT with Writing. Priors: 2026 PreACT Secure grade 10 and 2025 PreACT 9 Secure grade 9. & First year in which the grade 11 high school sequence is fully ACT-family. Grade 9 and grade 10 use the recurring IAR-to-ACT transition pattern. \\
+\bottomrule
+\end{longtable}
+
+Several implications follow.
+
+\begin{itemize}
+\item For grades 4 through 8, 2026 and later analyses remain IAR-to-IAR analyses and can continue to use the standard grade sequences.
+\item For grade 9, the IAR-to-PreACT 9 Secure transition is a recurring grade-span transition rather than a temporary vendor transition. Grade 9 SGPs will always condition on middle school IAR history unless a different prior-data rule is adopted.
+\item For grade 10, 2026 is the first year with an ACT-family current score and ACT-family first prior. The second prior is grade 8 IAR, which is part of the recurring grade 10 sequence.
+\item For grade 11, 2026 is the first year with an ACT-family current score and ACT-family first prior. If the operational model uses two priors, the second prior is still PSAT 8/9 in 2026. A one-prior grade 11 model in 2026 would be ACT-family for current and prior scores but would not be directly comparable to a two-prior grade 11 model.
+\item For grade 11, 2027 is the first year with ACT with Writing, PreACT Secure, and PreACT 9 Secure all present in the same longitudinal sequence.
+\end{itemize}
+
+\section{Baseline-Referenced Implications}
+
+Baseline-referenced high school growth should be treated as a separate design problem, not as a simple extension of the current IAR baseline workflow. Table~\ref{tab:baseline_map} provides a practical matrix-development map.
+
+\begin{longtable}{L{0.18\textwidth}L{0.28\textwidth}L{0.18\textwidth}L{0.25\textwidth}}
+\caption{Baseline-referenced implications by grade span.}\label{tab:baseline_map}\\
+\toprule
+Grade span & Recurring assessment sequence for ELA/math SGPs & First stable calibration opportunity & Baseline recommendation \\
+\midrule
+\endfirsthead
+\toprule
+Grade span & Recurring assessment sequence for ELA/math SGPs & First stable calibration opportunity & Baseline recommendation \\
+\midrule
+\endhead
+Grades 4--8 & IAR current score with IAR priors. & Already available through existing Illinois baseline matrices. & Continue cohort- and baseline-referenced SGPs. Update projection targets to the new proficiency benchmarks when reporting growth-to-standard quantities. \\
+\addlinespace
+Grade 9 & PreACT 9 Secure current score with IAR grade 8 and, when available, IAR grade 7 priors. & 2025 is the first possible sequence, but it is also the first ACT-family administration year. & Report cohort-referenced SGPs during the transition. Consider an ACT-era grade 9 baseline only after evaluating 2025, 2026, and 2027 distributions for stability. \\
+\addlinespace
+Grade 10 & PreACT Secure current score with PreACT 9 Secure grade 9 first prior and IAR grade 8 second prior. & 2026 is the first recurring sequence. & A grade 10 ACT-era baseline could be calibrated from 2026 or a pooled stable reference set and used no earlier than 2027, subject to validation. \\
+\addlinespace
+Grade 11 & ACT with Writing current score with PreACT Secure grade 10 first prior and PreACT 9 Secure grade 9 second prior. & 2027 is the first full ACT-family high school sequence. & A full two-prior grade 11 ACT-era baseline should not be operational before 2028. A one-prior 2026 baseline is possible only as a distinct, explicitly labeled model. \\
+\bottomrule
+\end{longtable}
+
+A key decision is whether Illinois wants high school baseline-referenced SGPs to be anchored to a single ACT-era baseline year, a pooled ACT-era baseline period, or a rolling multi-year reference. Each choice has tradeoffs.
+
+\begin{description}[leftmargin=1.8em, style=nextline]
+\item[Single baseline year.] This is easiest to explain and closest to the current fixed-baseline model. It is also most sensitive to first-year administration effects if the baseline year is too early.
+\item[Pooled baseline period.] Pooling 2026 and 2027, or 2025 through 2027 where the assessment sequence is appropriate, can stabilize coefficient estimation. The disadvantage is that different grades become stable in different years, so the pooled design must be grade-specific.
+\item[Rolling reference.] A rolling reference improves recency but weakens the interpretation of baseline-referenced SGPs as fixed-reference measures. It is better understood as a smoothed cohort reference than as a traditional baseline.
+\end{description}
+
+For operational accountability reporting, the defensible default is to continue baseline-referenced SGPs for grades 4 through 8 and report only cohort-referenced SGPs for high school until ACT-era matrices are deliberately created, reviewed, and approved.
+
+\section{Interaction with New Performance Levels and Proficiency Benchmarks}
+
+The 2025 performance-level changes should be separated from the assessment-vendor transition. SGP percentile estimation uses raw scale scores and conditional distributions. It does not use performance-level labels such as Below Proficient, Approaching Proficient, Proficient, or Above Proficient. Therefore, the new cut scores do not, by themselves, break either cohort-referenced or baseline-referenced SGP percentile calculations.
+
+The new cut scores do matter for growth projections and growth-to-standard reporting. The supplied 2025 script requests \texttt{sgp.projections}, \texttt{sgp.projections.lagged}, \texttt{sgp.projections.baseline}, and \texttt{sgp.projections.lagged.baseline}. Those quantities depend on achievement targets. For 2026 and later reporting, target definitions should be aligned to the new Illinois proficiency benchmarks, including the new IAR ELA and mathematics benchmarks and the ACT-family high school benchmarks.
+
+Operationally, this means:
+
+\begin{itemize}
+\item Percentile SGPs can be compared conceptually before and after the performance-level reset, subject to the usual distinction between cohort and baseline references.
+\item Projection and adequacy summaries should not mix old and new proficiency targets.
+\item If a report includes both achievement-level changes and growth results, explanatory language should state that SGPs are based on scale scores rather than performance-level categories.
+\end{itemize}
+
+\section{Implementation Considerations for 2026 and 2027}
+
+\subsection{Configuration}
+
+The supplied 2025 R script reflects the grades 4 through 8 IAR configuration. Extending the cohort-referenced analysis to high school requires adding grade sequences for grades 9, 10, and 11 and ensuring that ELA and mathematics content labels are harmonized across IAR, PSAT/SAT, PreACT, and ACT data files.
+
+For a 2026 cohort-referenced run using three panel years, the conceptual grade-sequence list would be:
+
+\begin{verbatim}
+sgp.panel.years = c("2023_2024.2", "2024_2025.2", "2025_2026.2")
+sgp.grade.sequences = list(
+    c("3", "4"),
+    c("3", "4", "5"),
+    c("4", "5", "6"),
+    c("5", "6", "7"),
+    c("6", "7", "8"),
+    c("7", "8", "9"),
+    c("8", "9", "10"),
+    c("9", "10", "11")
+)
+\end{verbatim}
+
+The same structure would apply separately to ELA and mathematics, assuming content-area naming is consistent. In production, baseline flags should not be enabled for high school configurations unless matching high school baseline coefficient matrices exist. A clean implementation is to separate the IAR grades 4 through 8 baseline run from the high school cohort-only run, then combine outputs downstream.
+
+\subsection{Knots, Boundaries, and Scale Validation}
+
+The ACT-family assessments have grade-specific scales. The SGP state data object must include appropriate knots and boundaries for each high school content/grade/current-score scale. The code pattern already present in the 2025 script for creating science knots and boundaries illustrates the type of validation needed, but ELA and mathematics high school score distributions should be checked directly before production.
+
+Specific checks should include:
+
+\begin{itemize}
+\item current-year score ranges by grade and content;
+\item missing, invalid, or non-operational scores;
+\item score precision and whether ACT/PreACT scale scores are integer-valued in the delivered file;
+\item availability and interpretation of conditional standard errors of measurement if SIMEX correction is requested;
+\item consistency of content labels across IAR, PSAT/SAT, PreACT, and ACT records.
+\end{itemize}
+
+\subsection{SIMEX Measurement-Error Correction}
+
+The supplied production script requests both uncorrected and SIMEX-corrected SGPs and baseline SGPs. For grades 4 through 8, this can continue if the IAR score and CSEM fields remain consistent. For high school, SIMEX correction requires that the delivered ACT/PreACT files contain defensible CSEM information for the score variables used in the SGP model. If ACT/PreACT CSEM values are unavailable or not comparable to the IAR CSEM field, high school production should either run uncorrected cohort SGPs or complete a separate technical evaluation before releasing SIMEX-corrected high school SGPs.
+
+\subsection{Student Linking and Participation Rules}
+
+Longitudinal linking should be reviewed carefully during the transition because vendor systems, pre-ID processes, and assessment records changed. The 2025 script already contains an Illinois-specific data cleaning step that renames student identifier fields in prior-year files. For high school growth, the same issue should be audited across ACT/PreACT, PSAT/SAT, and IAR files.
+
+The 2026 Pre-ID documentation indicates that students enrolled in SIS are automatically included in ACT/PreACT Pre-ID records by grade, except where the SIS enrollment indicates IDEA Services = Yes and Alternate Assessment (DLM-AA) = Yes. It also indicates that Non-College Reportable scores are provided to ISBE for accountability purposes. For growth analyses, the relevant question is not college reportability but whether the operational accountability score is valid, available, and included under the same participation rules used for achievement reporting.
+
+\section{Recommended Reporting Approach}
+
+For 2026 reporting, the following approach is recommended.
+
+\begin{enumerate}
+\item \textbf{Grades 4 through 8:} Continue cohort- and baseline-referenced ELA and mathematics SGPs using the established IAR workflow and existing Illinois baseline coefficient matrices. Update projections and growth-to-standard targets to the new proficiency benchmarks.
+
+\item \textbf{Grade 9:} Report cohort-referenced ELA and mathematics SGPs using PreACT 9 Secure current scores and available IAR grade 8 and grade 7 prior scores. Treat this as the recurring IAR-to-high-school sequence, but do not report baseline-referenced grade 9 SGPs until an ACT-era grade 9 baseline has been evaluated.
+
+\item \textbf{Grade 10:} Report cohort-referenced ELA and mathematics SGPs using PreACT Secure current scores, PreACT 9 Secure first-prior scores, and IAR grade 8 second-prior scores where available. Consider 2026 as the first candidate calibration year for a recurring grade 10 ACT-era baseline.
+
+\item \textbf{Grade 11:} Report cohort-referenced ELA and mathematics SGPs using ACT with Writing current scores and PreACT Secure first-prior scores. If the operational model includes two priors, document that the 2026 second prior is PSAT 8/9. Defer full two-prior baseline-referenced grade 11 SGPs until after 2027 data have been used to calibrate and validate ACT-era matrices.
+
+\item \textbf{Public interpretation:} Label 2025 and 2026 high school SGPs as transition-year cohort-referenced growth measures. Avoid presenting them as baseline-referenced or as directly comparable to future ACT-era baseline results.
+\end{enumerate}
+
+Suggested report language:
+
+\begin{quote}
+\small
+High school SGPs are cohort-referenced measures calculated from the current year's statewide assessment results and available prior state assessment scores. Because Illinois transitioned from SAT/PSAT to ACT/PreACT beginning in spring 2025, high school SGPs for 2025 and some 2026 grade sequences reflect transition-year assessment histories. These results describe student growth relative to academic peers in the same statewide cohort; they are not baseline-referenced SGPs unless explicitly identified as such.
+\end{quote}
+
+\section{Decision Points for ISBE}
+
+Before implementing high school baseline-referenced SGPs, ISBE should resolve the following design decisions.
+
+\begin{enumerate}
+\item \textbf{Reference cohort.} Should the ACT-era baseline be a single year, a pooled set of years, or another fixed reference design?
+\item \textbf{Grade-specific timing.} Should grade 9, grade 10, and grade 11 baselines be introduced as soon as each sequence becomes stable, or should ISBE wait and introduce all high school baselines together?
+\item \textbf{Prior-score rule.} Should high school SGPs use up to two priors, consistent with grades 4 through 8, or should a one-prior grade 11 model be reported during the 2026 transition?
+\item \textbf{SIMEX availability.} Are high school CSEM fields available and suitable for the same SIMEX workflow used in the current IAR analyses?
+\item \textbf{Projection targets.} Which growth projection and lagged projection outputs are needed for high school, and how should they align to the new ACT proficiency benchmarks?
+\item \textbf{Accountability use.} Will high school cohort SGPs be informational only during transition years, or will they enter accountability calculations before baseline matrices are available?
+\end{enumerate}
+
+
+\section{Source Documents Reviewed}
+
+This memo is based on the following source materials provided for review:
+
+\begin{itemize}
+\item \textit{ACT FAQ}, dated June 7, 2024, describing Illinois' transition to ACT beginning in spring 2025 and identifying ACT with Writing, PreACT Secure, and PreACT 9 Secure as the grade 11, grade 10, and grade 9 assessments.
+\item \textit{Spring 2026 ACT with Writing, PreACT Secure, and PreACT 9 Secure Pre-ID and Non-College Reportable Details}, updated November 13, 2025, describing the 2026 Pre-ID structure and operational treatment of ACT/PreACT records.
+\item \textit{Spring 2024 SAT with Essay, PSAT 10, and PSAT 8/9 Pre-ID}, updated January 23, 2024, describing the prior College Board high school assessment records.
+\item \textit{Right-Sizing Illinois' Proficiency Benchmarks}, describing the new unified performance levels, ACT-family cut scores, and the distinction between performance levels and SGPs.
+\item \texttt{PARCC\_IL\_SGP\_2024\_2025.2.R}, the supplied 2025 Illinois SGP analysis script.
+\end{itemize}
+
+\section{Bottom Line}
+
+The ACT transition does not prevent Illinois from calculating high school cohort-referenced SGPs. It does prevent a simple extension of the existing baseline-referenced IAR workflow to high school. The strongest technical course is to continue the existing grades 4 through 8 cohort and baseline analyses, add cohort-referenced high school analyses with clear transition labels, and delay high school baseline-referenced reporting until ACT-era coefficient matrices have been developed for the recurring grade sequences. Under a two-prior model, 2027 is the first year with a complete ACT-family grade 11 high school history, making 2028 the earliest prudent year for operational use of a full grade 11 ACT-era baseline.
+
+\end{document}
